@@ -1,0 +1,126 @@
+{
+  "schemaVersion": 1,
+  "code": "P0010",
+  "id": "video-lab",
+  "aliases": [
+    "P0010",
+    "Video Lab",
+    "Video Mixer"
+  ],
+  "name": "Video Lab",
+  "type": "Desktop",
+  "owner": "Tool",
+  "status": "Active",
+  "summary": "Local FFmpeg batch video mixer (Intro + N×Main + Outro) — HubSplit 7/3 + Setting/History/Console rail. Desktop NSIS + worker sidecar (github-release).",
+  "stack": [
+    "React",
+    "TypeScript",
+    "Vite",
+    "Electron",
+    "hub-ui",
+    "FFmpeg",
+    "Python"
+  ],
+  "uiScreens": [
+    {
+      "screen": "mixer",
+      "template": "directory",
+      "golden": "P0006/dashboard stealth-profile 7/3",
+      "notes": "Main dual HubDirectory (Input above Output) + rail Setting / History / Console with sticky Start/Stop."
+    },
+    {
+      "screen": "encode",
+      "template": "directory",
+      "golden": "P0006/dashboard stealth-profile 7/3",
+      "notes": "Normalize Main clips to one decoder profile; seeded from Mixer Start when Prefight will_split."
+    },
+    {
+      "screen": "system",
+      "template": "system-panels",
+      "golden": "P0006/system",
+      "notes": "Empty Design Template + Worker/Stack/Pipeline info cards."
+    }
+  ],
+  "uiShell": {
+    "golden": "P0003",
+    "mainMode": "split",
+    "splitScreens": [
+      "mixer",
+      "encode"
+    ],
+    "userFooter": "workspace"
+  },
+  "commands": {
+    "dev": "pnpm dev",
+    "build": "pnpm build",
+    "preview": "pnpm preview",
+    "typecheck": "pnpm typecheck",
+    "test": "pnpm test",
+    "smoke:ui": "pnpm smoke:ui",
+    "desktop:dev": "pnpm desktop:dev",
+    "desktop:dist": "pnpm desktop:dist",
+    "desktop:release": "pnpm desktop:release"
+  },
+  "deployTarget": "github-release",
+  "desktopAutoUpdate": "GitHub Releases on public tuanhoangfx/Video-Lab-Releases (binaries only). Source stays private in Video-Lab. Optional updater-gh-token for rate-limit only.",
+  "github": {
+    "repo": "tuanhoangfx/Video-Lab-Releases"
+  },
+  "urls": {
+    "local": "http://127.0.0.1:3029"
+  },
+  "docs": {
+    "readme": "README.md",
+    "changelog": "CHANGELOG.md",
+    "scorecard": "docs/AB-SCORECARD.md",
+    "desktopRelease": "Tool/docs/playbooks/_cards/desktop-exe-release.md",
+    "architecture": "docs/ARCHITECTURE.md",
+    "workerApi": "docs/worker-api.md",
+    "pipeline": "docs/pipeline-mix-encode.md",
+    "troubleshooting": "docs/troubleshooting.md"
+  },
+  "release": {
+    "version": "3.1.38",
+    "readiness": [
+      "build",
+      "typecheck",
+      "test",
+      "smoke:ui",
+      "worker-health",
+      "desktop-dist"
+    ],
+    "latestPublished": {
+      "tag": "v3.1.38",
+      "url": "https://github.com/tuanhoangfx/Video-Lab-Releases/releases/tag/v3.1.38",
+      "publishedAt": "2026-08-04T12:03:35.111Z"
+    }
+  },
+  "worker": {
+    "port": 8029,
+    "healthPath": "/health",
+    "framework": "FastAPI",
+    "root": "worker"
+  },
+  "manifestUpdatedAt": "2026-08-05T07:57:54.600Z",
+  "ship": {
+    "schemaVersion": 1,
+    "fastPath": "Deploy",
+    "releasePath": "Release",
+    "deployTarget": "github-release",
+    "playbook": "Tool/docs/playbooks/release-fast-path.md",
+    "script": "powershell -File E:\\Dev\\Tool\\scripts\\ship-product.ps1",
+    "preShip": [
+      "check-version-sync",
+      "verify-untracked-imports",
+      "verify-no-sibling-tool-imports",
+      "build"
+    ],
+    "preShipCommands": {
+      "check-version-sync": "node E:\\Dev\\Tool\\scripts\\check-version-sync.mjs --product-root . --no-warn-published",
+      "verify-untracked-imports": "node E:\\Dev\\Tool\\scripts\\verify-untracked-imports.mjs --product-root .",
+      "verify-no-sibling-tool-imports": "node E:\\Dev\\Tool\\scripts\\verify-no-sibling-tool-imports.mjs --product-root .",
+      "build": "corepack pnpm run build"
+    },
+    "syncedAt": "2026-07-30T12:02:30.464Z"
+  }
+}
