@@ -1,17 +1,21 @@
 {
   "schemaVersion": 1,
-  "code": "P0010",
+  "code": "P0006",
   "id": "video-lab",
   "aliases": [
+    "P0006",
     "P0010",
     "Video Lab",
-    "Video Mixer"
+    "Video Mixer",
+    "AutoVideo Studio",
+    "P0021",
+    "Content Studio"
   ],
   "name": "Video Lab",
   "type": "Desktop",
   "owner": "Tool",
   "status": "Active",
-  "summary": "Local FFmpeg batch video mixer (Intro + N×Main + Outro) — HubSplit 7/3 + Setting/History/Console rail. Desktop NSIS + worker sidecar (github-release).",
+  "summary": "Unified Video Lab (Studio scene/TTS composer + Multi-platform Downloader & AI Reup + Smart Cut 1→N + Batch FFmpeg Mixer + Upload Profile Encoder) — HubSplit 7/3 + Setting/History/Console rail. Desktop NSIS + worker sidecar :8029.",
   "stack": [
     "React",
     "TypeScript",
@@ -22,6 +26,24 @@
     "Python"
   ],
   "uiScreens": [
+    {
+      "screen": "studio",
+      "template": "split-workspace",
+      "golden": "P0021/studio",
+      "notes": "AutoVideo Studio — Image Library + Preview + Script + Voice/BGM + Keyframe Scene Timeline with 1-click Send to Mixer."
+    },
+    {
+      "screen": "reup",
+      "template": "directory",
+      "golden": "P0006/dashboard stealth-profile 7/3",
+      "notes": "Multi-platform Downloader (TikTok/Douyin/YouTube/FB) & AI Video Reup (Faster-Whisper STT + Translate + Edge-TTS + Mask/Burn Sub) with 1-click Send to Cut / Mixer / Encode."
+    },
+    {
+      "screen": "cut",
+      "template": "directory",
+      "golden": "P0006/dashboard stealth-profile 7/3",
+      "notes": "Smart Cut & Split 1→N (Trim Head/Tail, Range In/Out, Split Chunks, Auto-Split Scene/Silence) with 1-click Send to Mixer / Encode."
+    },
     {
       "screen": "mixer",
       "template": "directory",
@@ -45,10 +67,15 @@
     "golden": "P0003",
     "mainMode": "split",
     "splitScreens": [
+      "studio",
+      "reup",
+      "cut",
       "mixer",
       "encode"
     ],
-    "userFooter": "workspace"
+    "userFooter": "workspace",
+    "family": "video",
+    "familyDoc": "Tool/docs/ssot/hub-video-family-ssot.md"
   },
   "commands": {
     "dev": "pnpm dev",
@@ -64,10 +91,29 @@
   "deployTarget": "github-release",
   "desktopAutoUpdate": "GitHub Releases on public tuanhoangfx/Video-Lab-Releases (binaries only). Source stays private in Video-Lab. Optional updater-gh-token for rate-limit only.",
   "github": {
-    "repo": "tuanhoangfx/Video-Lab-Releases"
+    "repo": "tuanhoangfx/Video-Lab-Releases",
+    "branch": "main",
+    "manifestPath": "tool.manifest.json"
   },
   "urls": {
-    "local": "http://127.0.0.1:3029"
+    "local": "http://127.0.0.1:3029",
+    "app": "https://github.com/tuanhoangfx/Video-Lab-Releases/releases",
+    "site": "https://videolab.infi.io.vn/intro/"
+  },
+  "site": {
+    "deployTarget": "lenovo-static",
+    "registryKey": "P0006-SITE",
+    "platform": "P0008",
+    "siteId": "videolab",
+    "root": "Tool/P0008-Landing-Platform/sites/videolab",
+    "domain": "videolab.infi.io.vn",
+    "basePath": "/intro/",
+    "deploy": "node Tool/scripts/deploy-lenovo-static.mjs --code P0006-SITE",
+    "notes": "Landing + guide built by the P0008 Landing Platform engine (site videolab). Separate key so Deploy/Release P0006 keeps meaning the desktop installer."
+  },
+  "health": {
+    "status": "Active",
+    "note": "Desktop installer on GitHub Releases. Local UI http://127.0.0.1:3029, worker :8029."
   },
   "docs": {
     "readme": "README.md",
@@ -80,7 +126,7 @@
     "troubleshooting": "docs/troubleshooting.md"
   },
   "release": {
-    "version": "3.1.38",
+    "version": "6.1.89",
     "readiness": [
       "build",
       "typecheck",
@@ -90,9 +136,17 @@
       "desktop-dist"
     ],
     "latestPublished": {
-      "tag": "v3.1.38",
-      "url": "https://github.com/tuanhoangfx/Video-Lab-Releases/releases/tag/v3.1.38",
-      "publishedAt": "2026-08-04T12:03:35.111Z"
+      "tag": "v6.1.88",
+      "url": "https://github.com/tuanhoangfx/Video-Lab-Releases/releases/tag/v6.1.88",
+      "publishedAt": "2026-10-28T14:38:29Z",
+      "asset": {
+        "name": "Video.Lab.Setup.6.1.88.exe",
+        "downloadUrl": "https://github.com/tuanhoangfx/Video-Lab-Releases/releases/download/v6.1.88/Video.Lab.Setup.6.1.88.exe",
+        "size": 258381329,
+        "sha256": "81621bcc9a0f743294095f2be50228443ed7aabaf2d71522177e2f9dc1ed903b",
+        "sha512": "ReyCA0jdtQno3mzUwrrnjKb7zTJwPr1b7/TvPyMpwsdQRD4HjcIY3bkROt2jnyGjzO1LF4YV2Vpzbe2fQif3Sw==",
+        "feedUrl": "https://github.com/tuanhoangfx/Video-Lab-Releases/releases/download/v6.1.88/latest.yml"
+      }
     }
   },
   "worker": {
@@ -101,7 +155,7 @@
     "framework": "FastAPI",
     "root": "worker"
   },
-  "manifestUpdatedAt": "2026-08-05T07:57:54.600Z",
+  "manifestUpdatedAt": "2026-10-28T15:01:15.942Z",
   "ship": {
     "schemaVersion": 1,
     "fastPath": "Deploy",
@@ -113,14 +167,20 @@
       "check-version-sync",
       "verify-untracked-imports",
       "verify-no-sibling-tool-imports",
+      "hub-workspace-chrome-ssot",
       "build"
     ],
     "preShipCommands": {
       "check-version-sync": "node E:\\Dev\\Tool\\scripts\\check-version-sync.mjs --product-root . --no-warn-published",
       "verify-untracked-imports": "node E:\\Dev\\Tool\\scripts\\verify-untracked-imports.mjs --product-root .",
       "verify-no-sibling-tool-imports": "node E:\\Dev\\Tool\\scripts\\verify-no-sibling-tool-imports.mjs --product-root .",
+      "hub-workspace-chrome-ssot": "node E:\\Dev\\Tool\\scripts\\audit-hub-workspace-chrome-ssot.mjs --json",
       "build": "corepack pnpm run build"
     },
-    "syncedAt": "2026-07-30T12:02:30.464Z"
+    "syncedAt": "2026-08-16T23:20:31.819Z"
+  },
+  "versions": {
+    "current": "6.1.89",
+    "latestPublished": "6.1.88"
   }
 }
